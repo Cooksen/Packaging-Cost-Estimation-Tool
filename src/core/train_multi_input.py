@@ -1,0 +1,72 @@
+"""train_multi_input.py
+This module contains the main function to train models for different components.
+It supports both linear regression and support vector regression (SVR) models.
+It can handle multiple components like corrugate, EPE, MPP, and freight.
+The trained models are saved to specified paths for later use."""
+
+import argparse
+
+from models.regression import train_linear_model
+from models.svr import train_svr_model
+from utils.data_loader import load_json
+from utils.utils import extract_xy, extract_xy_freight
+
+
+def get_data_by_component(component):
+    if component == "corrugate":
+        return load_json("data/price_weight_corrugate.json")
+    elif component == "epe":
+        return load_json("data/price_weight_EPE.json") + load_json(
+            "data/price_weight_EPE_YFY.json"
+        )
+    elif component == "mpp":
+        return load_json("data/price_weight_MPP.json") + load_json(
+            "data/price_weight_MPP_YFY.json"
+        )
+    elif component == "freight":
+        return load_json("data/freight_cost_data.json")  # 確保這個 JSON 存在且格式正確
+    else:
+        raise ValueError(f"Unsupported component: {component}")
+
+
+def train_model_for_component(component, model_type):
+    print(f"Training {component} model with {model_type}...")
+
+    data = get_data_by_component(component)
+    feature = "OD" if component == "freight" else "weight"
+    if component == "freight":
+        X, y = extract_xy_freight(data)
+    else:
+        X, y, _ = extract_xy(data, feature=feature)
+
+    if model_type == "linear":
+        train_func = train_linear_model
+        suffix = "linear_model"
+    elif model_type == "svr":
+        train_func = train_svr_model
+        suffix = "svr_model"
+    else:
+        raise ValueError("Unsupported model type. Choose 'linear' or 'svr'.")
+
+    model_path = f"trained_models/{component}_{suffix}.pkl"
+    mse, r2 = train_func(X, y, model_path)
+    print(f"[{component}] MSE: {mse:.4f}, R²: {r2:.4f}")
+    return component, mse, r2
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--model",
+        choices=["linear", "svr"],
+        required=True,
+        help="Choose which model to train",
+    )
+    parser.add_argument(
+        "--component",
+        choices=["corrugate", "epe", "mpp", "freight"],
+        required=True,
+        help="Component to train model for",
+    )
+    args = parser.parse_args()
+    train_model_for_component(args.component, args.model)

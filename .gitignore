@@ -1,0 +1,50 @@
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*.so
+
+
+# Data files
+*.csv
+*.xlsx
+*.json
+
+# Image outputs
+*.png
+*.jpg
+*.jpeg
+*.svg
+
+# Models and checkpoints
+*.pkl
+*.h5
+*.ckpt
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Experiments and test cache
+.experiment/
+.pytest_cache/
+.cache/
+
+# Editor & IDE
+.vscode/
+.idea/
+
+# Logs and misc
+*.log
+*.tmp
+*.bak
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Poetry and build files
+*.egg-info/
+
+# System files
+.DS_Store
+Thumbs.db
