@@ -25,10 +25,11 @@ __pycache__/
 env/
 venv/
 
+
 # Experiments and test cache
-.experiment/
 .pytest_cache/
 .cache/
+src/
 
 # Editor & IDE
 .vscode/
