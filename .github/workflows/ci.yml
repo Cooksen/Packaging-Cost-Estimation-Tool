@@ -22,20 +22,21 @@ jobs:
       run: |
         pip install poetry
 
-    - name: Install dependencies
+    - name: Cache Poetry virtualenv
       uses: actions/cache@v3
       with:
         path: ~/.cache/pypoetry
         key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
         restore-keys: |
           ${{ runner.os }}-poetry-
+
+    - name: Install dependencies
       run: poetry install
 
     - name: Run lint and format check
       run: |
         poetry run task lint
         poetry run task format --check
-
 
     - name: Run tests with pytest
       run: |
