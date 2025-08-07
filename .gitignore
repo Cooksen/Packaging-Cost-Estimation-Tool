@@ -26,10 +26,11 @@ env/
 venv/
 
 
+
 # Experiments and test cache
 .pytest_cache/
 .cache/
-src/
+**/experiments/
 
 # Editor & IDE
 .vscode/
