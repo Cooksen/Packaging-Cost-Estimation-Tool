@@ -2,7 +2,8 @@
 This module contains the main function to train models for different components.
 It supports both linear regression and support vector regression (SVR) models.
 It can handle multiple components like corrugate, EPE, MPP, and freight.
-The trained models are saved to specified paths for later use."""
+The trained models are saved to specified paths for later use.
+"""
 
 import argparse
 
@@ -14,23 +15,20 @@ from utils.utils import extract_xy, extract_xy_freight
 
 def get_data_by_component(component):
     if component == "corrugate":
-        return load_json("data/price_weight_corrugate.json")
+        return load_json("parsed_data/price_weight_corrugate.json")
     elif component == "epe":
-        return load_json("data/price_weight_EPE.json") + load_json(
-            "data/price_weight_EPE_YFY.json"
-        )
+        return load_json("parsed_data/price_weight_EPE.json")
     elif component == "mpp":
-        return load_json("data/price_weight_MPP.json") + load_json(
-            "data/price_weight_MPP_YFY.json"
-        )
+        return load_json("parsed_data/price_weight_MPP.json")
     elif component == "freight":
-        return load_json("data/freight_cost_data.json")  # 確保這個 JSON 存在且格式正確
+        return load_json(
+            "parsed_data/freight_cost_data.json"
+        )  # 確保這個 JSON 存在且格式正確
     else:
         raise ValueError(f"Unsupported component: {component}")
 
 
 def train_model_for_component(component, model_type):
-    print(f"Training {component} model with {model_type}...")
 
     data = get_data_by_component(component)
     feature = "OD" if component == "freight" else "weight"
@@ -50,7 +48,6 @@ def train_model_for_component(component, model_type):
 
     model_path = f"trained_models/{component}_{suffix}.pkl"
     mse, r2 = train_func(X, y, model_path)
-    print(f"[{component}] MSE: {mse:.4f}, R²: {r2:.4f}")
     return component, mse, r2
 
 

@@ -1,10 +1,12 @@
 """train_validate_page.py
 This page allows users to train and validate models for cost estimation.
 It provides options to select model types and initiate training.
-It also displays validation results after training is complete."""
+It also displays validation results after training is complete.
+"""
 
 import os
 import subprocess
+
 import streamlit as st
 from PIL import Image
 
@@ -41,7 +43,7 @@ def render():
                         "poetry",
                         "run",
                         "python",
-                        "src/main_functions/train_multi_input.py",
+                        "src/core/train_multi_input.py",
                         "--model",
                         model_type,
                         "--component",
@@ -53,7 +55,7 @@ def render():
                         "poetry",
                         "run",
                         "python",
-                        "src/main_functions/validate_multi_input.py",
+                        "src/core/validate_multi_input.py",
                         "--model",
                         model_type,
                         "--component",
@@ -68,7 +70,7 @@ def render():
                     "poetry",
                     "run",
                     "python",
-                    "src/main_functions/train_multi_input.py",
+                    "src/core/train_multi_input.py",
                     "--model",
                     model_freight,
                     "--component",
@@ -80,7 +82,7 @@ def render():
                     "poetry",
                     "run",
                     "python",
-                    "src/main_functions/validate_multi_input.py",
+                    "src/core/validate_multi_input.py",
                     "--model",
                     model_freight,
                     "--component",

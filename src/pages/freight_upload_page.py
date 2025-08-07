@@ -1,12 +1,14 @@
 """freight_upload_page.py
 This page allows users to upload freight cost data in Excel format.
 It processes the uploaded file and saves it as a JSON file for further use.
-It also displays the total number of records in the uploaded data."""
+It also displays the total number of records in the uploaded data.
+"""
 
 import os
 
-import pandas as pd
 import streamlit as st
+
+from utils.data_loader import process_freight_data  # 確保路徑正確
 
 
 def render():
@@ -26,14 +28,10 @@ def render():
         st.success("📥 Freight cost data uploaded successfully!")
         st.session_state["freight_data_path"] = temp_path
 
-        # 顯示總筆數並儲存為 JSON
+        # 透過自訂的處理函式進行處理與儲存
         try:
-            df = pd.read_excel(temp_path, engine="openpyxl")
-            st.write(f"📊 Total records in freight cost data: `{len(df)}`")
-
-            # 儲存為 JSON
-            json_path = "data/freight_cost_data.json"
-            df.to_json(json_path, orient="records", indent=2)
-            st.success(f"✅ JSON file saved to `{json_path}`")
+            count = process_freight_data(temp_path)
+            st.write(f"📊 Total records in freight cost data: `{count}`")
+            st.success("✅ JSON file saved to `parsed_data/freight_cost_data.json`")
         except Exception as e:
-            st.error(f"❌ Failed to read freight cost data: {e}")
+            st.error(f"❌ Failed to process freight cost data: {e}")

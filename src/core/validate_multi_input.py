@@ -74,29 +74,21 @@ def validate_model(X, y, labels, model_path, title, xlabel, ylabel, save_name):
     plt.tight_layout()
     plt.savefig(save_name)
     plt.close()
-    print(
-        f"{title} R² score: {r2:.4f}, Equation: {equation} (saved plot to {save_name})"
-    )
 
 
 def main(component, model_type):
-    print(f"Loading validation data for {component}...")
 
     if component == "corrugate":
-        data = load_json("data/price_weight_corrugate.json")
+        data = load_json("parsed_data/price_weight_corrugate.json")
         feature = "weight"
     elif component == "epe":
-        data = load_json("data/price_weight_EPE.json") + load_json(
-            "data/price_weight_EPE_YFY.json"
-        )
+        data = load_json("parsed_data/price_weight_EPE.json")
         feature = "weight"
     elif component == "mpp":
-        data = load_json("data/price_weight_MPP.json") + load_json(
-            "data/price_weight_MPP_YFY.json"
-        )
+        data = load_json("parsed_data/price_weight_MPP.json")
         feature = "weight"
     elif component == "freight":
-        data = load_json("data/freight_cost_data.json")
+        data = load_json("parsed_data/freight_cost_data.json")
         feature = "OD"
     else:
         raise ValueError(f"Unsupported component: {component}")
@@ -104,7 +96,6 @@ def main(component, model_type):
     suffix = f"{model_type}_model"
     model_path = f"trained_models/{component}_{suffix}.pkl"
     save_path = f"validation_fig/validate_{component}_{suffix}.png"
-    print("Path: ", f"validation_fig/validate_{component}_{model_type}_model.png")
     if component == "epe" or component == "mpp":
         title = f"{component.upper()} ({model_type.upper()})"
     else:

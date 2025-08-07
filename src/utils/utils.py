@@ -1,11 +1,11 @@
 """utils.py
 This module contains utility functions for cost estimation.
 It includes functions to parse plank sizes and extract features from data.
-It also provides functions to extract features and labels for training models."""
+It also provides functions to extract features and labels for training models.
+"""
 
-import joblib
 import numpy as np
-from sklearn.metrics import mean_squared_error, r2_score
+
 
 def parse_plank_size(size_str):
     """Parse plank size from a string."""
