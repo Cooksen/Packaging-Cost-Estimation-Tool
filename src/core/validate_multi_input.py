@@ -27,7 +27,6 @@ from utils.data_loader import load_json
 from utils.model_predictor import predict
 from utils.utils import extract_xy, extract_xy_freight
 
-
 def validate_model(X, y, labels, model_path, title, xlabel, ylabel, save_name):
     y_pred = predict(model_path, X)
     r2 = r2_score(y, y_pred)
