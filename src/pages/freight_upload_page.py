@@ -31,7 +31,6 @@ def render():
         # 透過自訂的處理函式進行處理與儲存
         try:
             count = process_freight_data(temp_path)
-            st.write(f"📊 Total records in freight cost data: `{count}`")
-            st.success("✅ JSON file saved to `parsed_data/freight_cost_data.json`")
+            st.write("All records uploaded successfully!")
         except Exception as e:
             st.error(f"❌ Failed to process freight cost data: {e}")

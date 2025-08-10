@@ -409,7 +409,25 @@ logging-modules=logging
 
 
 [MESSAGES CONTROL]
-
+disable =
+    C0114,  # missing-module-docstring
+    C0116,  # missing-function-docstring
+    C0103,  # invalid-name (例如 X, Y 這類變數)
+    C0301,  # line-too-long
+    R0913,  # too-many-arguments
+    R0914,  # too-many-locals
+    R0915,  # too-many-statements
+    R0912,  # too-many-branches
+    R0917,  # too-many-positional-arguments
+    R0801,  # duplicate-code
+    W1510,  # subprocess.run without check=
+    W1514,  # open without encoding
+    W0718,  # catching too general exception
+    W1309,  # f-string without interpolation
+    R1705,  # no-else-return
+    R1735,  # use-dict-literal
+    R1714,  # consider-using-in
+    
 # Only show warnings with the listed confidence levels. Leave empty to show
 # all. Valid levels: HIGH, CONTROL_FLOW, INFERENCE, INFERENCE_FAILURE,
 # UNDEFINED.

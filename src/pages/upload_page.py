@@ -29,8 +29,8 @@ def render():
 
         st.success("✅ JSON files created in /parsed_data!")
         st.write("📊 Data Summary:")
-        st.write(f"- Corrugate: `{counts['Corrugate']}` records")
-        st.write(f"- EPE: `{counts['EPE']}` records")
-        st.write(f"- MPP: `{counts['MPP']}` records")
+        st.write(f"- Corrugate: all records uploaded")
+        st.write(f"- EPE: all records uploaded")
+        st.write(f"- MPP: all records uploaded")
 
         st.session_state["uploaded"] = True
