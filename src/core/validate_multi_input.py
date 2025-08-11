@@ -89,6 +89,11 @@ def main(component, model_type):
     elif component == "freight":
         data = load_json("parsed_data/freight_cost_data.json")
         feature = "OD"
+    elif component == "bag":
+        data = load_json("parsed_data/price_size_bag.json")
+        for item in data:
+                item["area"] = item["l"] * item["h"]
+        feature = "area"
     else:
         raise ValueError(f"Unsupported component: {component}")
 
@@ -99,7 +104,14 @@ def main(component, model_type):
         title = f"{component.upper()} ({model_type.upper()})"
     else:
         title = f"{component.capitalize()} ({model_type.upper()})"
-    xlabel = "OD" if component == "freight" else "Weight"
+    
+    if component == "freight":
+        xlabel = "OD"
+    elif component == "bag":
+        xlabel = "Bag Area"
+    else:
+        xlabel = "Weight"
+
     ylabel = "price"
     if component == "freight":
         X, y = extract_xy_freight(data)
@@ -120,7 +132,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--component",
-        choices=["corrugate", "epe", "mpp", "freight"],
+        choices=["corrugate", "epe", "mpp", "bag", "freight"],
         required=True,
         help="Component to validate",
     )

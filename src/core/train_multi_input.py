@@ -21,9 +21,9 @@ def get_data_by_component(component):
     elif component == "mpp":
         return load_json("parsed_data/price_weight_MPP.json")
     elif component == "freight":
-        return load_json(
-            "parsed_data/freight_cost_data.json"
-        )  # 確保這個 JSON 存在且格式正確
+        return load_json("parsed_data/freight_cost_data.json")
+    elif component == "bag":
+        return load_json("parsed_data/price_size_bag.json")
     else:
         raise ValueError(f"Unsupported component: {component}")
 
@@ -31,7 +31,16 @@ def get_data_by_component(component):
 def train_model_for_component(component, model_type):
 
     data = get_data_by_component(component)
-    feature = "OD" if component == "freight" else "weight"
+    
+    if component == "freight":
+        feature = "OD"
+    elif component == "bag":
+        for item in data:
+            item["area"] = item["l"] * item["h"]
+        feature = "area"
+    else:
+        feature = "weight"
+
     if component == "freight":
         X, y = extract_xy_freight(data)
     else:
@@ -61,7 +70,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--component",
-        choices=["corrugate", "epe", "mpp", "freight"],
+        choices=["corrugate", "epe", "mpp", "bag", "freight"],
         required=True,
         help="Component to train model for",
     )
