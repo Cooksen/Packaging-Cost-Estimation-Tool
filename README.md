@@ -1,30 +1,23 @@
-# Packaging Cost Estimation System
+# Packaging Cost Estimation Tool
 
-This project provides a modular, extensible system for estimating the costs of packaging materials such as Corrugate, EPE, MPP, and Freight. It supports multi-model training (Linear, SVR), prediction, and a Streamlit UI interface.
-
----
+This project provides a modular, extensible system for estimating the costs of packaging materials (e.g., Corrugate, EPE, MPP) and freight. It features an interactive Streamlit UI, supports multiple regression models (`Linear`, `SVR`), and includes a suite of development tools for testing and code formatting.
 
 ## Features
 
-- Excel-based pricing template ingestion
-- Streamlit-based interactive interface
-- Train & validate models with `linear` or `svr` options
-- Predict cost per component using saved models
-- Automated linting, formatting, and testing via `taskipy`
-
----
+- **Interactive UI**: A web-based interface built with Streamlit for easy data upload, model training, and cost estimation.
+- **Excel-Based Data Ingestion**: Supports pricing and freight data import from `.xlsx` files.
+- **Flexible Model Training**: Train and validate cost estimation models using Linear Regression or Support Vector Regression (SVR).
+- **Component-Based Estimation**: Predict costs for individual packaging components and freight.
+- **Developer Toolkit**: Integrated tasks for automated testing, code formatting, and import sorting.
 
 ## Requirements
 
 - Python 3.11+
 - Poetry 1.7+
-- Optional: Node.js if using advanced Streamlit components
-
----
 
 ## Installation
 
-Install dependencies via Poetry:
+Use Poetry to install the required project dependencies.
 
 ```bash
 poetry install
@@ -36,62 +29,70 @@ Activate the virtual environment:
 poetry shell
 ```
 
----
+## Usage
 
-## ️Usage
-
-### Train & Validate Models
+This project uses `poe the poet` as a task runner. All tasks are defined in the `pyproject.toml` file and can be executed with:
 
 ```bash
-poetry run train          # Train using linear model
-poetry run validate       # Validate linear model
-poetry run train_svr      # Train using SVR model
-poetry run validate_svr   # Validate SVR model
+poetry run poe <task_name>
 ```
 
-### Visualization (Command Line)
+### Launch the Application
+
+To start the Streamlit web application:
 
 ```bash
-poetry run visualization
+poetry run poe app
 ```
 
----
+### Model Training & Validation (Command Line)
 
-## Testing
-
-Run all unit tests using pytest:
+- **Train a Model**  
+  Specify the `--model` (`linear` or `svr`) and `--component` (`corrugate`, `epe`, `mpp`, `bag`, `freight`):
 
 ```bash
-poetry run pytest tests/
+# Example: Train the corrugate component with a linear model
+poetry run poe train --model linear --component corrugate
 ```
 
----
-
-## Formatting
-
-### Format
+- **Validate a Model**:
 
 ```bash
-poetry run task format
+# Example: Validate the epe component with an SVR model
+poetry run poe validate --model svr --component epe
 ```
 
-> These tasks are defined under `[tool.taskipy.tasks]` in `pyproject.toml`.
+### Development Tasks
 
----
+- **Run Tests**:
+
+```bash
+poetry run poe test
+```
+
+- **Format Code**:
+
+```bash
+poetry run poe format
+```
+
+- **Sort Imports**:
+
+```bash
+poetry run poe isort
+```
 
 ## Project Structure
 
 ```
 src/
-├── core/              # Training, validation, and inference logic
-├── cli/               # Optional CLI wrappers (e.g. visualization)
-├── models/            # Linear / SVR models
+├── core/              # Core logic for training, validation, and inference
+├── cli/               # Entry points for running the application
+├── models/            # Linear Regression and SVR models
 ├── pages/             # Streamlit UI pages
-├── utils/             # Data loading, predictors, config files
+├── utils/             # Utilities for data loading, prediction, etc.
 tests/
 ├── test_data_loader.py
 ├── test_model_predictor.py
 └── test_train.py
 ```
-
----
