@@ -8,7 +8,5 @@ set "PATH=%PATH%;C:\Program Files\Python311;%USERPROFILE%\AppData\Roaming\Python
 :: Change to the project directory
 cd "C:\Users\Sen_Chao\OneDrive - Dell Technologies\Desktop\project\cost_estimation"
 
-:: Run the application
-poetry run poe app
-
+poetry run python start_app.py
 pause
