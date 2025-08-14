@@ -27,6 +27,7 @@ from utils.data_loader import load_json
 from utils.model_predictor import predict
 from utils.utils import extract_xy, extract_xy_freight
 
+
 def validate_model(X, y, labels, model_path, title, xlabel, ylabel, save_name):
     y_pred = predict(model_path, X)
     r2 = r2_score(y, y_pred)
@@ -92,7 +93,7 @@ def main(component, model_type):
     elif component == "bag":
         data = load_json("parsed_data/price_size_bag.json")
         for item in data:
-                item["area"] = item["l"] * item["h"]
+            item["area"] = item["l"] * item["h"]
         feature = "area"
     else:
         raise ValueError(f"Unsupported component: {component}")
@@ -104,7 +105,7 @@ def main(component, model_type):
         title = f"{component.upper()} ({model_type.upper()})"
     else:
         title = f"{component.capitalize()} ({model_type.upper()})"
-    
+
     if component == "freight":
         xlabel = "OD"
     elif component == "bag":

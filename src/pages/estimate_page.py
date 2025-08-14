@@ -56,7 +56,6 @@ def render():
     sb_info = render_corrugate_box("System Box", "sb")
     ac_info = render_corrugate_box("Accessory Box", "ac")
     kb_info = render_corrugate_box("KB Tray", "kb")
-    
 
     st.subheader("📦 System Box Dimensions (for Freight Calculation)")
     length = st.number_input("Length (mm)", min_value=0.0)
@@ -105,20 +104,26 @@ def render():
                 "Component Name", comp["name"], key=f"name_{i}"
             )
             comp["material"] = st.selectbox(
-                "Material Type", ["Corrugate", "MPP", "EPE", "Bag"], key=f"material_{i}"
+                "Material Type", ["Corrugate", "MPP", "Bag"], key=f"material_{i}"
             )
             if comp["material"] == "Bag":
-                bw = st.number_input("Bag Width (mm)", min_value=0.0, key=f"bag_width_{i}")
-                bl = st.number_input("Bag Length (mm)", min_value=0.0, key=f"bag_length_{i}")
+                bw = st.number_input(
+                    "Bag Width (mm)", min_value=0.0, key=f"bag_width_{i}"
+                )
+                bl = st.number_input(
+                    "Bag Length (mm)", min_value=0.0, key=f"bag_length_{i}"
+                )
                 comp["feature"] = bw * bl  # Area in mm²
-                comp["qty"] = st.number_input("Quantity", min_value=0, key=f"bag_qty_{i}")
+                comp["qty"] = st.number_input(
+                    "Quantity", min_value=0, key=f"bag_qty_{i}"
+                )
             else:
                 comp["weight"] = st.number_input(
                     "Weight (g)", min_value=0.0, key=f"weight_{i}"
                 )
                 comp["qty"] = st.number_input("Quantity", min_value=0, key=f"qty_{i}")
                 comp["feature"] = comp["weight"]  # Weight in g
-            
+
             custom_inputs.append(comp)
             if st.button(f"❌ Remove this component", key=f"delete_{i}"):
                 deleted_indices.append(i)
@@ -138,9 +143,9 @@ def render():
                     x = feature
                     input_label = "Area (mm²)"
                 else:
-                    x = feature / 1000       # g → kg
+                    x = feature / 1000  # g → kg
                     input_label = "Weight (g)"
-            
+
                 unit_price = float(model.predict(np.array([[x]]))[0])
                 total = unit_price * qty
                 component_rows.append(
@@ -178,7 +183,6 @@ def render():
         add_row("EPE", "EPE", epe_weight, epe_qty, epe_model)
         add_row("MPP", "MPP", mpp_weight, mpp_qty, mpp_model)
         add_row("Bag", "Bag", bag_area, bag_qty, bag_model)
-
 
         for comp in custom_inputs:
             model = {

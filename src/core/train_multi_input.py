@@ -31,7 +31,7 @@ def get_data_by_component(component):
 def train_model_for_component(component, model_type):
 
     data = get_data_by_component(component)
-    
+
     if component == "freight":
         feature = "OD"
     elif component == "bag":

@@ -24,7 +24,7 @@ def render():
     model_freight = st.selectbox("Freight model", ["linear", "svr"])
 
     train_button = st.button("🚀 Train All Models")
-
+    model_epe = "linear"  # Default to linear for EPE as per original code
     if train_button:
         st.session_state["model_selection"] = {
             "corrugate": model_corrugate,
@@ -37,7 +37,8 @@ def render():
 
             # Component training
             for component, model_type in zip(
-                ["corrugate", "epe", "mpp", "bag"], [model_corrugate, model_epe, model_mpp, model_bag]
+                ["corrugate", "epe", "mpp", "bag"],
+                [model_corrugate, model_mpp, model_bag],
             ):
                 st.write(f"🔧 Training {component} with {model_type} model...")
                 subprocess.run(
@@ -101,7 +102,7 @@ def render():
         st.subheader("📈 Validation Results")
         for component, model_type in zip(
             ["corrugate", "epe", "mpp", "bag", "freight"],
-            [model_corrugate, model_epe, model_mpp, model_freight],
+            [model_corrugate, model_mpp, model_freight],
         ):
             path = f"validation_fig/validate_{component}_{model_type}_model.png"
             if os.path.exists(path):

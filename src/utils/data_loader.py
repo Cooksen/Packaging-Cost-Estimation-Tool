@@ -12,7 +12,9 @@ All output files are saved under the `parsed_data/` directory.
 """
 
 import json
+
 import openpyxl
+
 
 def load_json(path):
     """
@@ -28,6 +30,7 @@ def load_json(path):
         data = json.load(file)
     return data
 
+
 def process_excel_to_json(file_path):
     wb = openpyxl.load_workbook(file_path, data_only=True)
     ws = wb.active
@@ -38,12 +41,17 @@ def process_excel_to_json(file_path):
     for row in ws.iter_rows(min_row=2, values_only=True):
         row_dict = dict(zip(headers, row))
         material = row_dict.get("material", "")
+        weight = row_dict.get("weight", None)
+
         if material is not None:
             material = material.strip().lower()
             if material == "corrugate":
-                corrugate_data.append(row_dict)
+                if weight is not None and weight <= 1.1:
+                    corrugate_data.append(row_dict)
+
             elif material == "epe":
-                epe_data.append(row_dict)
+                if weight is not None and weight <= 0.16:
+                    epe_data.append(row_dict)
             elif material == "mpp":
                 mpp_data.append(row_dict)
             elif material == "bag":
@@ -63,8 +71,9 @@ def process_excel_to_json(file_path):
         "Corrugate": len(corrugate_data),
         "EPE": len(epe_data),
         "MPP": len(mpp_data),
-        "Bag": len(bag_data)
+        "Bag": len(bag_data),
     }
+
 
 def process_freight_data(file_path):
     """

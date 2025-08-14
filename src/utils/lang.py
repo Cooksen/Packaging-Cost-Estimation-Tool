@@ -4,6 +4,7 @@ from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 HUGGINGFACE_API_TOKEN = ""
 
+
 @st.cache_resource
 def load_model():
     tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-base")
@@ -17,7 +18,9 @@ tokenizer, model = load_model()
 st.title("FLAN-T5 model testing")
 
 prompt = st.text_area(
-    "Input your instructions here：", height=100, placeholder="Where is the capital of France？"
+    "Input your instructions here：",
+    height=100,
+    placeholder="Where is the capital of France？",
 )
 
 if st.button("Generate text", type="primary"):

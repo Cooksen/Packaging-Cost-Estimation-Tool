@@ -7,6 +7,7 @@ The predicted price is returned as a float value.
 import joblib
 import numpy as np
 
+
 def predict(model_path, value):
     """
     Load a model from the specified path and make a prediction based on the input value.

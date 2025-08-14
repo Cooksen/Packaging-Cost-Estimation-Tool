@@ -31,6 +31,7 @@ taskipy = "^1.14.1"
 black = "^25.1.0"
 isort = "^6.0.1"
 pytest = "^8.4.1"
+poethepoet = "^0.36.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -43,6 +44,8 @@ visualization = "src.cli.visualization_cli:main"
 train_svr = "src.core.train_svr:main"
 validate_svr = "src.core.validate_svr:main"
 
-[tool.taskipy.tasks]
-lint = "pylint src --rcfile=.pylintrc"
-format = "black src && isort src"
+[tool.poe.tasks]
+test = "pytest tests/"
+format = "black src/"
+isort = "isort src/"
+

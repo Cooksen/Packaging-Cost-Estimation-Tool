@@ -8,7 +8,7 @@ import os
 
 import streamlit as st
 
-from utils.data_loader import process_freight_data  
+from utils.data_loader import process_freight_data
 
 
 def render():

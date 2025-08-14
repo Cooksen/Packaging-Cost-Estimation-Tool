@@ -67,13 +67,7 @@ poetry run pytest tests/
 
 ---
 
-## Linting & Formatting
-
-### Lint
-
-```bash
-poetry run task lint
-```
+## Formatting
 
 ### Format
 
