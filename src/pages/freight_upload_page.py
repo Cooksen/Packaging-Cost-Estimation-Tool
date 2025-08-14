@@ -8,7 +8,7 @@ import os
 
 import streamlit as st
 
-from utils.data_loader import process_freight_data  # 確保路徑正確
+from utils.data_loader import process_freight_data
 
 
 def render():
@@ -28,7 +28,6 @@ def render():
         st.success("📥 Freight cost data uploaded successfully!")
         st.session_state["freight_data_path"] = temp_path
 
-        # 透過自訂的處理函式進行處理與儲存
         try:
             count = process_freight_data(temp_path)
             st.write("All records uploaded successfully!")

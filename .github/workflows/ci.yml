@@ -33,11 +33,8 @@ jobs:
     - name: Install dependencies
       run: poetry install
 
-    - name: Run lint and format check
-      run: |
-        poetry run task lint
-        poetry run task format --check
+    - name: Run format check
+      run: poetry run poe format-check
 
-    - name: Run tests with pytest
-      run: |
-        poetry run pytest tests/
+    - name: Run tests
+      run: poetry run poe test

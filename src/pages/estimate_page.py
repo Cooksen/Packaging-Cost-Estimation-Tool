@@ -35,6 +35,9 @@ def render():
         mpp_model = joblib.load(
             f"trained_models/mpp_{model_selection['mpp']}_model.pkl"
         )
+        bag_model = joblib.load(
+            f"trained_models/bag_{model_selection['bag']}_model.pkl"
+        )
         freight_model = joblib.load(
             f"trained_models/freight_{model_selection['freight']}_model.pkl"
         )
@@ -72,6 +75,12 @@ def render():
     mpp_weight = st.number_input("MPP Weight (g)", min_value=0.0)
     mpp_qty = st.number_input("MPP Quantity", min_value=0)
 
+    st.header("Bag")
+    bag_width = st.number_input("Bag Width(mm)", min_value=0.0)
+    bag_length = st.number_input("Bag Length(mm)", min_value=0.0)
+    bag_area = bag_width * bag_length
+    bag_qty = st.number_input("Bag Quantity", min_value=0)
+
     st.header("Custom Components")
     if "custom_components" not in st.session_state:
         st.session_state.custom_components = []
@@ -95,12 +104,26 @@ def render():
                 "Component Name", comp["name"], key=f"name_{i}"
             )
             comp["material"] = st.selectbox(
-                "Material Type", ["Corrugate", "MPP", "EPE"], key=f"material_{i}"
+                "Material Type", ["Corrugate", "MPP", "Bag"], key=f"material_{i}"
             )
-            comp["weight"] = st.number_input(
-                "Weight (g)", min_value=0.0, key=f"weight_{i}"
-            )
-            comp["qty"] = st.number_input("Quantity", min_value=0, key=f"qty_{i}")
+            if comp["material"] == "Bag":
+                bw = st.number_input(
+                    "Bag Width (mm)", min_value=0.0, key=f"bag_width_{i}"
+                )
+                bl = st.number_input(
+                    "Bag Length (mm)", min_value=0.0, key=f"bag_length_{i}"
+                )
+                comp["feature"] = bw * bl  # Area in mm²
+                comp["qty"] = st.number_input(
+                    "Quantity", min_value=0, key=f"bag_qty_{i}"
+                )
+            else:
+                comp["weight"] = st.number_input(
+                    "Weight (g)", min_value=0.0, key=f"weight_{i}"
+                )
+                comp["qty"] = st.number_input("Quantity", min_value=0, key=f"qty_{i}")
+                comp["feature"] = comp["weight"]  # Weight in g
+
             custom_inputs.append(comp)
             if st.button(f"❌ Remove this component", key=f"delete_{i}"):
                 deleted_indices.append(i)
@@ -113,15 +136,24 @@ def render():
     if st.button("💰 Estimate Total Cost"):
         component_rows = []
 
-        def add_row(name, material, weight, qty, model):
-            if weight > 0:
-                unit_price = model.predict(np.array([[weight / 1000]]))[0]
+        def add_row(name, material, feature, qty, model):
+            if feature > 0:
+
+                if material == "Bag":
+                    x = feature
+                    input_label = "Area (mm²)"
+                else:
+                    x = feature / 1000  # g → kg
+                    input_label = "Weight (g)"
+
+                unit_price = float(model.predict(np.array([[x]]))[0])
                 total = unit_price * qty
                 component_rows.append(
                     {
                         "Component": name,
                         "Material": material,
-                        "Weight (g)": weight,
+                        "Spec": input_label,
+                        "Spec Value": feature,
                         "Quantity": qty,
                         "Unit Price (USD)": round(unit_price, 2),
                         "Total Price (USD)": round(total, 2),
@@ -149,25 +181,27 @@ def render():
         )
         add_row("EPE", "EPE", epe_weight, epe_qty, epe_model)
         add_row("MPP", "MPP", mpp_weight, mpp_qty, mpp_model)
+        add_row("Bag", "Bag", bag_area, bag_qty, bag_model)
 
         for comp in custom_inputs:
             model = {
                 "Corrugate": corrugate_model,
                 "EPE": epe_model,
                 "MPP": mpp_model,
+                "Bag": bag_model,
             }.get(comp["material"])
-            add_row(comp["name"], comp["material"], comp["weight"], comp["qty"], model)
+            add_row(comp["name"], comp["material"], comp["feature"], comp["qty"], model)
 
         df_material = pd.DataFrame(
             [row for row in component_rows if row["Material"] != "Freight"]
         )
 
-        # Add subtotal row for materials
         material_total = df_material["Total Price (USD)"].sum()
         df_material.loc[len(df_material.index)] = {
             "Component": "Materials Total",
             "Material": None,
-            "Weight (g)": None,
+            "Spec": None,
+            "Spec Value": None,
             "Quantity": None,
             "Unit Price (USD)": None,
             "Total Price (USD)": material_total,
@@ -176,7 +210,6 @@ def render():
         st.subheader("📦 Material Cost Report")
         st.dataframe(df_material)
 
-        # Freight summary text
         st.subheader("🚚 Freight Summary")
         if OD > 0:
             freight_price = freight_model.predict(np.array([[OD]]))[0]
@@ -187,7 +220,6 @@ def render():
             freight_price = 0
             st.info("No valid freight dimensions entered. Freight cost not included.")
 
-        # Generate final downloadable report
         df_freight = pd.DataFrame()
         if OD > 0:
             df_freight = pd.DataFrame(
@@ -195,7 +227,8 @@ def render():
                     {
                         "Component": f"Freight (OD = {OD:.5f})",
                         "Material": "Freight",
-                        "Weight (g)": np.nan,
+                        "Spec": "Volume(m³)",
+                        "Spec Value": OD,
                         "Quantity": 1,
                         "Unit Price (USD)": np.nan,
                         "Total Price (USD)": round(freight_price, 2),
@@ -208,7 +241,8 @@ def render():
         df_report.loc[len(df_report.index)] = {
             "Component": "Total",
             "Material": None,
-            "Weight (g)": None,
+            "Spec": None,
+            "Spec Value": None,
             "Quantity": None,
             "Unit Price (USD)": None,
             "Total Price (USD)": total_cost,

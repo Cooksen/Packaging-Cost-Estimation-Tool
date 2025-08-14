@@ -20,12 +20,16 @@ import argparse
 
 import matplotlib.pyplot as plt
 import numpy as np
+import logging
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 
 from utils.data_loader import load_json
 from utils.model_predictor import predict
 from utils.utils import extract_xy, extract_xy_freight
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+
 
 def validate_model(X, y, labels, model_path, title, xlabel, ylabel, save_name):
     y_pred = predict(model_path, X)
@@ -72,6 +76,7 @@ def validate_model(X, y, labels, model_path, title, xlabel, ylabel, save_name):
 
     plt.tight_layout()
     plt.savefig(save_name)
+    logging.info(f"Validation fig saved at：{save_name}")
     plt.close()
 
 
@@ -89,6 +94,11 @@ def main(component, model_type):
     elif component == "freight":
         data = load_json("parsed_data/freight_cost_data.json")
         feature = "OD"
+    elif component == "bag":
+        data = load_json("parsed_data/price_size_bag.json")
+        for item in data:
+            item["area"] = item["l"] * item["h"]
+        feature = "area"
     else:
         raise ValueError(f"Unsupported component: {component}")
 
@@ -99,7 +109,14 @@ def main(component, model_type):
         title = f"{component.upper()} ({model_type.upper()})"
     else:
         title = f"{component.capitalize()} ({model_type.upper()})"
-    xlabel = "OD" if component == "freight" else "Weight"
+
+    if component == "freight":
+        xlabel = "OD"
+    elif component == "bag":
+        xlabel = "Bag Area"
+    else:
+        xlabel = "Weight"
+
     ylabel = "price"
     if component == "freight":
         X, y = extract_xy_freight(data)
@@ -120,7 +137,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--component",
-        choices=["corrugate", "epe", "mpp", "freight"],
+        choices=["corrugate", "epe", "mpp", "bag", "freight"],
         required=True,
         help="Component to validate",
     )

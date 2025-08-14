@@ -14,7 +14,6 @@ All output files are saved under the `parsed_data/` directory.
 import json
 
 import openpyxl
-import pandas as pd
 
 
 def load_json(path):
@@ -37,19 +36,26 @@ def process_excel_to_json(file_path):
     ws = wb.active
     headers = [cell.value for cell in ws[1]]
 
-    corrugate_data, epe_data, mpp_data = [], [], []
+    corrugate_data, epe_data, mpp_data, bag_data = [], [], [], []
 
     for row in ws.iter_rows(min_row=2, values_only=True):
         row_dict = dict(zip(headers, row))
         material = row_dict.get("material", "")
+        weight = row_dict.get("weight", None)
+
         if material is not None:
             material = material.strip().lower()
             if material == "corrugate":
-                corrugate_data.append(row_dict)
+                if weight is not None and weight <= 1.1:
+                    corrugate_data.append(row_dict)
+
             elif material == "epe":
-                epe_data.append(row_dict)
+                if weight is not None and weight <= 0.16:
+                    epe_data.append(row_dict)
             elif material == "mpp":
                 mpp_data.append(row_dict)
+            elif material == "bag":
+                bag_data.append(row_dict)
 
     # Dump JSON files
     with open("parsed_data/price_weight_corrugate.json", "w", encoding="utf-8") as f:
@@ -58,12 +64,14 @@ def process_excel_to_json(file_path):
         json.dump(epe_data, f, ensure_ascii=False, indent=2)
     with open("parsed_data/price_weight_MPP.json", "w", encoding="utf-8") as f:
         json.dump(mpp_data, f, ensure_ascii=False, indent=2)
+    with open("parsed_data/price_size_bag.json", "w", encoding="utf-8") as f:
+        json.dump(bag_data, f, ensure_ascii=False, indent=2)
 
-    # 回傳筆數資訊
     return {
         "Corrugate": len(corrugate_data),
         "EPE": len(epe_data),
         "MPP": len(mpp_data),
+        "Bag": len(bag_data),
     }
 
 
@@ -85,7 +93,7 @@ def process_freight_data(file_path):
     freight_data = []
 
     for row in ws.iter_rows(min_row=2, values_only=True):
-        if any(row):  # 跳過全空列
+        if any(row):
             row_dict = dict(zip(headers, row))
             freight_data.append(row_dict)
 

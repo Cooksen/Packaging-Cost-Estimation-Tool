@@ -32,5 +32,5 @@ def render():
         st.write(f"- Corrugate: all records uploaded")
         st.write(f"- EPE: all records uploaded")
         st.write(f"- MPP: all records uploaded")
-
+        st.write(f"- Bag: all records uploaded")
         st.session_state["uploaded"] = True
