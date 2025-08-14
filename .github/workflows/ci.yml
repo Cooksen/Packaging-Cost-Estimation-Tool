@@ -34,7 +34,7 @@ jobs:
       run: poetry install
 
     - name: Run format check
-      run: poetry run poe format-check
+      run: poetry run poe format
 
     - name: Run tests
       run: poetry run poe test

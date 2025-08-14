@@ -26,7 +26,6 @@ packages = [{include = "core", from = "src"}]
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^3.3.7"
-taskipy = "^1.14.1"
 black = "^25.1.0"
 isort = "^6.0.1"
 pytest = "^8.4.1"
