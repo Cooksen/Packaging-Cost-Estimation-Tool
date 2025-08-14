@@ -28,10 +28,8 @@ from utils.data_loader import load_json
 from utils.model_predictor import predict
 from utils.utils import extract_xy, extract_xy_freight
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(levelname)s: %(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+
 
 def validate_model(X, y, labels, model_path, title, xlabel, ylabel, save_name):
     y_pred = predict(model_path, X)

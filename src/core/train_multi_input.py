@@ -13,10 +13,8 @@ from models.svr import train_svr_model
 from utils.data_loader import load_json
 from utils.utils import extract_xy, extract_xy_freight
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(levelname)s: %(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+
 
 def get_data_by_component(component):
     if component == "corrugate":
@@ -34,7 +32,9 @@ def get_data_by_component(component):
 
 
 def train_model_for_component(component, model_type):
-    logging.info(f"Starting training for component '{component}' with model '{model_type}'...")
+    logging.info(
+        f"Starting training for component '{component}' with model '{model_type}'..."
+    )
     data = get_data_by_component(component)
 
     if component == "freight":

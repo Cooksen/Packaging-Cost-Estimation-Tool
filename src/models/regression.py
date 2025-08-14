@@ -19,7 +19,6 @@ def train_linear_model(X, y, save_path):
     loss = mean_squared_error(y, predictions)
     r2 = r2_score(y, predictions)
 
-
     # 儲存模型
     joblib.dump(model, save_path)
 
