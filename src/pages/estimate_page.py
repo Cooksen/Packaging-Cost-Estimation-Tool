@@ -152,7 +152,6 @@ def render():
                     {
                         "Component": name,
                         "Material": material,
-                        # "Weight (g)": feature,
                         "Spec": input_label,
                         "Spec Value": feature,
                         "Quantity": qty,
@@ -197,7 +196,6 @@ def render():
             [row for row in component_rows if row["Material"] != "Freight"]
         )
 
-        # Add subtotal row for materials
         material_total = df_material["Total Price (USD)"].sum()
         df_material.loc[len(df_material.index)] = {
             "Component": "Materials Total",
@@ -212,7 +210,6 @@ def render():
         st.subheader("📦 Material Cost Report")
         st.dataframe(df_material)
 
-        # Freight summary text
         st.subheader("🚚 Freight Summary")
         if OD > 0:
             freight_price = freight_model.predict(np.array([[OD]]))[0]
@@ -223,7 +220,6 @@ def render():
             freight_price = 0
             st.info("No valid freight dimensions entered. Freight cost not included.")
 
-        # Generate final downloadable report
         df_freight = pd.DataFrame()
         if OD > 0:
             df_freight = pd.DataFrame(
@@ -231,7 +227,6 @@ def render():
                     {
                         "Component": f"Freight (OD = {OD:.5f})",
                         "Material": "Freight",
-                        # "Weight (g)": np.nan,
                         "Spec": "Volume(m³)",
                         "Spec Value": OD,
                         "Quantity": 1,
@@ -246,7 +241,6 @@ def render():
         df_report.loc[len(df_report.index)] = {
             "Component": "Total",
             "Material": None,
-            # "Weight (g)": None,
             "Spec": None,
             "Spec Value": None,
             "Quantity": None,

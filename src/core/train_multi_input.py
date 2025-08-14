@@ -6,12 +6,17 @@ The trained models are saved to specified paths for later use.
 """
 
 import argparse
+import logging
 
 from models.regression import train_linear_model
 from models.svr import train_svr_model
 from utils.data_loader import load_json
 from utils.utils import extract_xy, extract_xy_freight
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s: %(message)s'
+)
 
 def get_data_by_component(component):
     if component == "corrugate":
@@ -29,7 +34,7 @@ def get_data_by_component(component):
 
 
 def train_model_for_component(component, model_type):
-
+    logging.info(f"Starting training for component '{component}' with model '{model_type}'...")
     data = get_data_by_component(component)
 
     if component == "freight":
@@ -75,4 +80,5 @@ if __name__ == "__main__":
         help="Component to train model for",
     )
     args = parser.parse_args()
-    train_model_for_component(args.component, args.model)
+    component, mse, r2 = train_model_for_component(args.component, args.model)
+    logging.info(f"Training complete for '{component}'. MSE: {mse:.4f}, R²: {r2:.4f}")

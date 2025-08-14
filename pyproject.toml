@@ -39,7 +39,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 train = "src.core.train:main"
-validate = "src.core.validate:main"
+validate = "src.core.validate_multi_input:main"
 visualization = "src.cli.visualization_cli:main"
 train_svr = "src.core.train_svr:main"
 validate_svr = "src.core.validate_svr:main"
@@ -48,4 +48,7 @@ validate_svr = "src.core.validate_svr:main"
 test = "pytest tests/"
 format = "black src/"
 isort = "isort src/"
+train = "python src/core/train_multi_input.py"
+validate = "python src/core/validate_multi_input.py"
+app = "streamlit run src/cli/run_app.py"
 

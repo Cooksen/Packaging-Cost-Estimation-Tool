@@ -20,6 +20,7 @@ import argparse
 
 import matplotlib.pyplot as plt
 import numpy as np
+import logging
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 
@@ -27,6 +28,10 @@ from utils.data_loader import load_json
 from utils.model_predictor import predict
 from utils.utils import extract_xy, extract_xy_freight
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s: %(message)s'
+)
 
 def validate_model(X, y, labels, model_path, title, xlabel, ylabel, save_name):
     y_pred = predict(model_path, X)
@@ -73,6 +78,7 @@ def validate_model(X, y, labels, model_path, title, xlabel, ylabel, save_name):
 
     plt.tight_layout()
     plt.savefig(save_name)
+    logging.info(f"Validation fig saved at：{save_name}")
     plt.close()
 
 
